@@ -47,11 +47,18 @@ ______          _   _   _ _
 def menu():
     print('''
 "1"--displays all ports listening TCP and UDP connections in numerical format
-"2"--scan all open/listening ports (it will take a long time for its execution)(BETA)
+"2"--scan all open/listening ports (it will take a long time for its execution)(Linux)
 "3"--find out which application is listening on a specific port
 "4"--output of all open ports
 "5"--to kill any process
+"6"-- +extra options(For windows)
 "0"--exit
+    ''')
+
+def menu_2():
+    print('''
+"7"--open port for server(Minecraft(recommended))
+"9"--go back
     ''')
 
 first = 'sudo ss -lntu'
@@ -63,23 +70,55 @@ fif = 'kill $(lsof -t -i:'
 def main():
     user  = input(">>")
     if user == "1":
-        os.system(first)
+        try:
+            os.system('netstat -an |find /i "listening"')
+        except:
+            os.system(first)
     elif user == "2":
-        os.system(second)
+        try:
+            os.system('netstat /a /o')
+        except:
+            os.system(second)
     elif user == "3":
         port = input("Enter port:")
-        os.system(thr + port)
+        try:
+            os.system('netstat -ano | findstr :' + port)
+        except:
+            os.system(thr + port)
     elif user == "4":
-        os.system(fou)
+        try:
+            os.system('netstat -a')
+        except:
+            os.system(fou)
     elif user == "5":
         killport = input("Enter port:")
-        os.system(fif + killport + ")")
+        try:
+            os.system('taskkill /PID ' + killport + ' /F')
+        except:
+            os.system(fif + killport + ")")
+    ###########
+    elif user == "6":
+        menu_2()
+        while 7:
+            userplus = input(">>>")
+            if userplus == "7":
+                minecraftport = input("Enter port:")
+                os.system('netsh advfirewall firewall add rule name=L2TP_TCP protocol=TCP localport=' + minecraftport + ' action=allow dir=IN')
+            elif userplus == "9":
+                os.system('cls')
+                start()
+            else:
+                print("Oops,try again")
+    ############
     elif user == "0":
         exit()
     else:
         print("Oops,try again")
 ########
+def start():
+    menu()
+    while 69:
+        main()
+
 print(random.choice(welc))
-menu()
-while 69:
-    main()
+start()
